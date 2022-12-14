@@ -59,6 +59,13 @@ int main(int argc, char *argv[])
       break;
   }
   Write_Output(output_name, C_Matrix);
+  delete [] A_Matrix;
+  delete [] B_Matrix;
+  delete [] AT_Matrix;
+  delete [] BT_Matrix;
+  delete [] C_Matrix.Matrix;
+  delete [] A.value;
+  delete [] B.value;
   return 0;
 }
 
