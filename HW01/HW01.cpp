@@ -30,13 +30,19 @@ int main(int argc, char *argv[])
   const char *input_name = *(argv + 1);
   const char *output_name = *(argv +2);
   Temp_Matrix A, B;
+  // read input file and write to temp matrix A and temp matrix B
   Read_File(input_name, &A, &B);
+  // turn temp matrix A and temp matrix B to matrix A and matrix B
   int **A_Matrix = To_Matrix(&A);
   int **B_Matrix = To_Matrix(&B);
+  // generate transpose matrix AT and transpose matrix BT
   int **AT_Matrix = Generate_Transpose_Matrix(A.row_num, A.column_num, A_Matrix);
   int **BT_Matrix = Generate_Transpose_Matrix(B.row_num, B.column_num, B_Matrix);
+  // decide the condition
   int condition = Matrix_Condition(A.row_num, A.column_num, B.row_num, B.column_num);
+  // according to the condition, generate matrix C
   C_Matrix_Struct C_Matrix = Generate_C(condition, A.row_num, A.column_num, B.row_num, B.column_num);
+  // according to the condition, calculate matrix C
   switch(condition)
   {
     case 0:
@@ -58,7 +64,9 @@ int main(int argc, char *argv[])
     default:
       break;
   }
+  // write matrix C to output file
   Write_Output(output_name, C_Matrix);
+  // free the memory
   delete [] A_Matrix;
   delete [] B_Matrix;
   delete [] AT_Matrix;
@@ -77,23 +85,28 @@ void Read_File(const char filename[], Temp_Matrix *A, Temp_Matrix *B)
 
   while((fscanf(input_file, "%c", c)) != EOF)
   {
+    // if A, then read next char, clear the flag and the index 
     if(strcmp("A", c) == 0)
     {
       flag = 0;
       index = 0;
       fscanf(input_file, "%c", c);
     }
+    // if B, then read next char, set the flag and claer the index 
     else if(strcmp("B", c) == 0)
     {
       flag = 1;
       index = 0;
       fscanf(input_file, "%c", c);
     }
+    // if ; and flag = 0, then A_row_num +1
+    // if ; and flag = 1, then B_row_num +1
     else if(strcmp(";", c) == 0)
     {
       if(!flag) {A -> row_num++;}
       else {B -> row_num++;}
     }
+    // if negative, then read the number and convert to negative int
     else if(strcmp("-", c) == 0)
     {
       fscanf(input_file, "%[0-9]", c);
@@ -111,6 +124,7 @@ void Read_File(const char filename[], Temp_Matrix *A, Temp_Matrix *B)
       }
 
     }
+    // if postive, then read the number and convert to postive int
     else if(fscanf(input_file, "%[0-9]", c))
     {
       if(!flag)
@@ -127,6 +141,7 @@ void Read_File(const char filename[], Temp_Matrix *A, Temp_Matrix *B)
       }
     }
   }
+  // free the memory and close the file
   delete [] c;
   fclose(input_file);
 }
@@ -142,10 +157,13 @@ void Write_Output(const char Output_Name[], C_Matrix_Struct C_Matrix)
     }
     fprintf(Output_File,";\n");
   }
+  fclose(Output_File);
 }
 
 int** To_Matrix(Temp_Matrix *temp)
 {
+  // if input is number, then column_num + 1
+  // hence, the real column_num = column_num / row_num 
   temp -> column_num /= temp -> row_num;
   int row_num = temp -> row_num;
   int column_num = temp -> column_num;
