@@ -11,15 +11,14 @@ all: $(BIN)
 	$(CC) $(CFLAGS) $< -o $@
 
 do:
-	./HW01 ./sample.in ./sample.out
-	./HW01 ./case1.in ./case1.out
-	./HW01 ./case2.in ./case2.out
-	./HW01 ./case3.in ./case3.out
-	./HW01 ./case4.in ./case4.out
-	./HW01 ./case5.in ./case5.out
+	./HW01 ./input/sample.in ./output/sample.out
+	./HW01 ./input/case1.in ./output/case1.out
+	./HW01 ./input/case2.in ./output/case2.out
+	./HW01 ./input/case3.in ./output/case3.out
+	./HW01 ./input/case4.in ./output/case4.out
+	./HW01 ./input/case5.in ./output/case5.out
 
 check:
-
 	$(CHECKCC) $(CHECKFLAGS) ./HW01
 
 clean:
