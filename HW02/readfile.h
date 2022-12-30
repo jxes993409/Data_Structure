@@ -10,16 +10,8 @@ typedef struct _processor_queue
 	int rear = 0, front = 0, top = -1;
 } Processor_Queue;
 
-typedef struct _return_data
-{
-	Processor_Queue *return_processor;
-	int return_processor_num;
-} Return_Data;
-
-
-Return_Data read_file(const char []);
+Processor_Queue* read_file(const char [], int *);
 void write_output(const char[], int, Processor_Queue *);
-void create_thread_queue(int);
 int get_processor_id(char [], int);
 char get_task_name(char [], int);
 void assign(int, char, Processor_Queue *);
