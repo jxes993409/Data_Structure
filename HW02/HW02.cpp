@@ -4,9 +4,6 @@
 #include <ctype.h>
 #include "readfile.h"
 
-void ASSIGN(int, char);
-void EXE(int);
-
 int main(int argc, char *argv[])
 {
   const char *input_name = *(argv + 1);
@@ -33,7 +30,7 @@ void read_file(const char filename[])
       processor = get_processor_id(line, strlen(line));
       task_id = get_task_name(line, strlen(line));
       printf("ASSIGN %d %c\n", processor, task_id);
-      // ASSIGN(processor, *c);
+      // ASSIGN(processor, task_id);
     }
     else if(line[0] == 'E')
     {

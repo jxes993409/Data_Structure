@@ -9,5 +9,7 @@ typedef struct _thread_queue
 void read_file(const char filename[]);
 int get_processor_id(char [], int);
 char get_task_name(char [], int);
+void assign(int, char);
+void exec(int);
 
 #endif
