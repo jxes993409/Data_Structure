@@ -6,8 +6,14 @@
 
 void ASSIGN(int, char);
 void EXE(int);
-int get_processor_id(char [], int);
-char get_task_name(char [], int);
+
+int main(int argc, char *argv[])
+{
+  const char *input_name = *(argv + 1);
+  const char *output_name = *(argv + 2);
+  read_file(input_name);
+  return 0;
+}
 
 void read_file(const char filename[])
 {
@@ -40,14 +46,6 @@ void read_file(const char filename[])
   // free the memory and close the file
   delete [] line;
   fclose(input_file);
-}
-
-int main(int argc, char *argv[])
-{
-  const char *input_name = *(argv + 1);
-  const char *output_name = *(argv + 2);
-  read_file(input_name);
-  return 0;
 }
 
 int get_processor_id(char line[], int len)
