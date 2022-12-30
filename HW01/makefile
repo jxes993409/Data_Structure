@@ -21,4 +21,12 @@ check:
 	$(CHECKCC) $(CHECKFLAGS) ./HW01
 
 clean:
-	rm -rf $(OUT) *HW01
+	rm -rf HW01
+
+compare:
+	diff -w ./output/sample.out ./golden_output/sample.out
+	diff -w ./output/case1.out ./golden_output/case1.out
+	diff -w ./output/case2.out ./golden_output/case2.out
+	diff -w ./output/case3.out ./golden_output/case3.out
+	diff -w ./output/case4.out ./golden_output/case4.out
+	diff -w ./output/case5.out ./golden_output/case5.out
