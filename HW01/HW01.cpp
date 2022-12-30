@@ -28,7 +28,7 @@ void Cal_Matrix(int, int, int, int **, int **, int **);
 int main(int argc, char *argv[])
 {
   const char *input_name = *(argv + 1);
-  const char *output_name = *(argv +2);
+  const char *output_name = *(argv + 2);
   Temp_Matrix A, B;
   // read input file and write to temp matrix A and temp matrix B
   Read_File(input_name, &A, &B);
