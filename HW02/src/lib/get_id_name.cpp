@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 int get_processor_id(char line[], int len)
 {
@@ -15,7 +16,9 @@ int get_processor_id(char line[], int len)
     }
   }
   // 0 < processor_num < 100, the number of digits < 3
-  char *processor_id_char = new char[2];
+  char processor_id_char[2];
+  // clear string
+  memset(processor_id_char, 0, size_t(2));
   for(int i = 0; i < count; i++)
   {
     // ex
@@ -32,12 +35,11 @@ int get_processor_id(char line[], int len)
     // = 8 - 2 + 1 + 1
     // = 8
     // processor_id_char[1] = '9'
+
     processor_id_char[i] = line[index - count + i + 1];
   }
   // char to int
   processor_id = atoi(processor_id_char);
-  // free the memory
-  delete [] processor_id_char;
   return processor_id;
 }
 

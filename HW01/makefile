@@ -4,7 +4,6 @@ CHECKCC = valgrind
 CHECKFLAGS = --leak-check=full -s
 BIN = HW01
 
-
 all: $(BIN)
 
 %: %.cpp

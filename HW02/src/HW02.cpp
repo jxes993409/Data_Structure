@@ -1,6 +1,6 @@
-#include "readfile.h"
-#include "get_id_name.h"
-#include "execute.h"
+#include "./lib/readfile.h"
+#include "./lib/get_id_name.h"
+#include "./lib/execute.h"
 
 int main(int argc, char *argv[])
 {

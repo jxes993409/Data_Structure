@@ -1,15 +1,20 @@
 CC = g++
 CFLAGS = -g -Wall
-OBJS = readfile.o get_id_name.o execute.o
+CHECKCC = valgrind
+CHECKFLAGS = --leak-check=full -s
+SRC_DIRS := src/lib
 BIN = HW02
+OUT = *.o
 
+SRCS := $(wildcard $(SRC_DIRS:=/*.cpp))
+OBJS := $(SRCS:.cpp=.o)
 
 all: $(BIN)
 
 %.o: %.cpp %.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BIN): HW02.cpp $(OBJS)
+$(BIN): src/HW02.cpp $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 do:
@@ -21,7 +26,15 @@ do:
 	./HW02 ./input/case5.in ./output/case5.out
 
 check:
-	$(CHECKCC) $(CHECKFLAGS) ./HW02
+	$(CHECKCC) $(CHECKFLAGS) ./HW02 ./input/sample.in ./output/sample.out
 
 clean:
-	rm -rf $(OUT) *HW02 *.o
+	rm -rf src/lib/*.o $(BIN)
+
+compare:
+	diff -w ./output/sample.out ./goledn_output/sample.out
+	diff -w ./output/case1.out ./goledn_output/case1.out
+	diff -w ./output/case2.out ./goledn_output/case2.out
+	diff -w ./output/case3.out ./goledn_output/case3.out
+	diff -w ./output/case4.out ./goledn_output/case4.out
+	diff -w ./output/case5.out ./goledn_output/case5.out

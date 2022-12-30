@@ -7,28 +7,27 @@ Processor_Queue* read_file(const char filename[], int *processor_num)
 {
   FILE *input_file = fopen(filename, "r");
   char *line = new char[15];
-  size_t len = 0;
   int processor_id;
   char task_name;
   // read the processor number first
-  getline(&line, &len, input_file);
+  fscanf(input_file, "%[^\n]%*c", line);
   *processor_num = atoi(line);
   Processor_Queue *processor = new Processor_Queue[*processor_num];
 
-  while((getline(&line, &len, input_file)) != EOF)
+  while((fscanf(input_file, "%[^\n]%*c", line)) != EOF)
   {
     // ASSIGN
     if(line[0] == 'A')
     {
-      processor_id = get_processor_id(line, strlen(line));
-      task_name = get_task_name(line, strlen(line));
+      processor_id = get_processor_id(line, int(strlen(line)));
+      task_name = get_task_name(line, int(strlen(line)));
       // printf("ASSIGN %d %c\n", processor_id, task_name);
       assign(processor_id - 1, task_name, processor);
     }
     // EXEC
     else if(line[0] == 'E')
     {
-      processor_id = get_processor_id(line, strlen(line));
+      processor_id = get_processor_id(line, int(strlen(line)));
       // printf("EXEC %d\n", processor_id);
       exec(processor_id - 1, *processor_num, processor);
     }
