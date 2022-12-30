@@ -11,12 +11,12 @@ all: $(BIN)
 	$(CC) $(CFLAGS) $< -o $@
 
 do:
-	./HW01 ./Sample_Input ./Sample_Output
-	./HW01 ./Testcase1 ./Output1
-	./HW01 ./Testcase2 ./Output2
-	./HW01 ./Testcase3 ./Output3
-	./HW01 ./Testcase4 ./Output4
-	./HW01 ./Testcase5 ./Output5
+	./HW01 ./sample.in ./sample.out
+	./HW01 ./case1.in ./case1.out
+	./HW01 ./case2.in ./case2.out
+	./HW01 ./case3.in ./case3.out
+	./HW01 ./case4.in ./case4.out
+	./HW01 ./case5.in ./case5.out
 
 check:
 
