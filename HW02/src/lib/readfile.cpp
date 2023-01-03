@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "readfile.h"
+#include "get_id_name.h"
+#include "execute.h"
 
 Processor_Queue* read_file(const char filename[], int *processor_num)
 {
