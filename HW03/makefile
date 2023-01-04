@@ -27,14 +27,15 @@ do:
 
 check:
 	$(CHECKCC) $(CHECKFLAGS) ./HW03 ./input/sample.in ./output/sample.out
+	$(CHECKCC) $(CHECKFLAGS) ./HW03 ./input/case1.in ./output/case1.out
 
 clean:
 	rm -rf src/lib/*.o $(BIN)
 
 compare:
 	diff -w ./output/sample.out ./golden_output/sample.out
-	# diff -w ./output/case1.out ./golden_output/case1.out
+	diff -w ./output/case1.out ./golden_output/case1.out
 	diff -w ./output/case2.out ./golden_output/case2.out
-	# diff -w ./output/case3.out ./golden_output/case3.out
-	# diff -w ./output/case4.out ./golden_output/case4.out
-	# diff -w ./output/case5.out ./golden_output/case5.out
+	diff -w ./output/case3.out ./golden_output/case3.out
+	diff -w ./output/case4.out ./golden_output/case4.out
+	diff -w ./output/case5.out ./golden_output/case5.out

@@ -5,15 +5,18 @@
 #include "readfile.h"
 #include "calc.h"
 
-void read_file(const char filename[], Polynomial *poly)
+void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address, Polytable *poly_table)
 {
   FILE *input_file = fopen(filename, "r");
   char *line = new char[50];
   int *num = new int[3]();
   int *coef_exp = new int[4]();
+  Polytable *poly_table_head = new Polytable;
+  poly_table_head = poly_table;
 
   while((fscanf(input_file, "%[^\n]%*c", line)) != EOF)
   {
+    poly_table = poly_table_head;
     // Operation ID: 0
     if(line[0] == '0')
     {
@@ -23,86 +26,68 @@ void read_file(const char filename[], Polynomial *poly)
       {
         fscanf(input_file, "%[^\n]%*c", line);
         get_coef_exp(line, coef_exp);
-        // printf("%d %d %d %d\n", coef_exp[0], coef_exp[1], coef_exp[2], coef_exp[3]);
-        add_node(num[0], coef_exp, poly);
+        add_node(num[0], coef_exp[0], coef_exp[1], coef_exp[2], coef_exp[3], poly, poly_address);
+        if(!i)
+        {
+          while(poly_table->next != NULL) {poly_table = poly_table->next;}
+          poly_table->next = add_poly_table_node(poly_address->tail);
+        }
       }
+      while(poly_table->next != NULL) {poly_table = poly_table->next;}
+      poly_table->next = add_poly_table_node(poly_address->tail);
     }
     // Operation ID: 1 (+)
     else if(line[0] == '1')
     {
       get_num(line, num, 1);
       // printf("1 %d %d\n", num[0], num[1]);
-      calc(1, num[0], num[1], poly);
+      calc(1, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 2 (-)
     else if(line[0] == '2')
     {
       get_num(line, num, 1);
       // printf("2 %d %d\n", num[0], num[1]);
-      calc(2, num[0], num[1], poly);
+      calc(2, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 3
     else if(line[0] == '3')
     {
       get_num(line, num, 1);
       // printf("3 %d %d\n", num[0], num[1]);
-      calc(3, num[0], num[1], poly);
+      calc(3, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 4
     else if(line[0] == '4')
     {
-      // printf("count: %d\n", poly_count--);
       get_num(line, num, 0);
       // printf("4 %d\n", num[0]);
-      calc(4, num[0], -1, poly);
+      calc(4, num[0], -1, poly, poly_address, poly_table_head);
     }
   }
   // free the memory and close the file
+  poly_table_head = NULL;
   delete [] line;
   delete [] num;
   delete [] coef_exp;
+  delete poly_table_head;
   fclose(input_file);
 }
 
-void write_output(const char filename[], Polynomial *poly)
+void write_output(const char filename[], Listnode *poly)
 {
   FILE *output_file = fopen(filename, "w");
-  if(poly == NULL) printf("NULL\n");
-  poly = poly->next;
   while(poly != NULL)
   {
-    int len = poly->len;
+    int len = poly->value.len;
     for(int i = 0; i < len; i++)
     {
       if(!i) fprintf(output_file, "%d\n", len);
-      fprintf(output_file, "%d %d %d %d\n", poly->coef, poly->exp_x, poly->exp_y, poly->exp_z);
+      fprintf(output_file, "%d %d %d %d\n", poly->value.coef, poly->value.exp_x, poly->value.exp_y, poly->value.exp_z);
       poly = poly->next;
     } 
   }
   fclose(output_file);
-}
-
-void add_node(int len, int *coef_exp, Polynomial *poly)
-{
-  while(true)
-	{
-		if(poly->next == NULL)
-		{
-			poly->next = new Polynomial;
-			poly = poly->next;
-      poly->len = len;
-			poly->coef = coef_exp[0];
-      poly->exp_x = coef_exp[1];
-      poly->exp_y = coef_exp[2];
-      poly->exp_z = coef_exp[3];
-			poly->next = NULL;
-			break;
-		}
-    else
-		{
-			poly= poly->next;
-		}
-	}
 }
 
 void get_num(const char line[], int *num, int state)
