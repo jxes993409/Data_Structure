@@ -11,10 +11,10 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   Listnode *poly_1_head = new Listnode;
   Listnode *poly_2_head = new Listnode;
   Listnode *return_poly_head = new Listnode;
-  Polytable *poly_table_head = new Polytable;
+  Polytable poly_table_head;
 
   return_poly_head = return_poly;
-  poly_table_head = poly_table;
+  poly_table_head = *poly_table;
   int len_1 = 0, len_2 = 0, return_len = 0;
 
   for(int i = 0; i < poly_1_pos; i++)
@@ -22,20 +22,20 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     poly_table = poly_table->next;
     poly_table = poly_table->next;
   }
-  poly = poly_table->address;
+  poly = poly_table->address; // poly_1 head
   poly_1 = copy(poly, poly->value.len);
   poly_1_head = poly_1;
 
-  poly_table = poly_table_head;
+  poly_table = &poly_table_head;
   for(int i = 0; i < poly_2_pos; i++)
   {
     poly_table = poly_table->next;
     poly_table = poly_table->next;
   }
-  poly = poly_table->address;
+  poly = poly_table->address; // poly_2 head
   poly_2 = copy(poly, poly->value.len);
   poly_2_head = poly_2;
-  // if()
+
   if(operation_id == 1 || operation_id == 2)
   {
     len_1 = poly_1->value.len;
@@ -61,12 +61,13 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
             return_poly = return_poly->next;
           }
         }
-        if(poly_2->next != NULL) poly_2 = poly_2->next;
+        if(poly_2->next != NULL) {poly_2 = poly_2->next;}
         else {poly_2 = poly_2_head;}
       }
-      if(poly_1->next != NULL) poly_1 = poly_1->next;
+      if(poly_1->next != NULL) {poly_1 = poly_1->next;}
       else {poly_1 = poly_1_head;}
     }
+    // append remaining terms
     for(int i = 0; i < len_1; i++)
     {
       if(!poly_1->value.be_calc)
@@ -75,7 +76,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
         return_poly->next = create_node(0, poly_1->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
         return_poly = return_poly->next;
       }
-      if(poly_1->next != NULL) poly_1 = poly_1->next;
+      if(poly_1->next != NULL) {poly_1 = poly_1->next;}
       else {poly_1 = poly_1_head;}
     }
     for(int i = 0; i < len_2; i++)
@@ -87,32 +88,30 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
         else {return_poly->next = create_node(0, -poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
         return_poly = return_poly->next;
       }
-      if(poly_2->next != NULL) poly_2 = poly_2->next;
+      if(poly_2->next != NULL) {poly_2 = poly_2->next;}
       else {poly_2 = poly_2_head;}
     }
   }
   else if(operation_id == 3)
   {
-    
     len_1 = poly_1->value.len;
     len_2 = poly_2->value.len;
     int temp_len = len_1 * len_2;
-    printf("%d\n" ,temp_len);
     return_len = temp_len;
-    // printf("%d %d\n", len_1, len_2);
     for(int i = 0; i < len_2; i++)
     {
       for(int j = 0; j < len_1; j++)
       {
         return_poly->next = create_node(0, poly_1->value.coef * poly_2->value.coef, poly_1->value.exp_x + poly_2->value.exp_x, poly_1->value.exp_y + poly_2->value.exp_y, poly_1->value.exp_z + poly_2->value.exp_z);
         return_poly = return_poly->next;
-        if(poly_1->next != NULL) poly_1 = poly_1->next;
+        if(poly_1->next != NULL) {poly_1 = poly_1->next;}
         else {poly_1 = poly_1_head;}
       }
-      if(poly_2->next != NULL) poly_2 = poly_2->next;
+      if(poly_2->next != NULL) {{poly_2 = poly_2->next;}}
       else {poly_2 = poly_2_head;}
     }
     return_poly = return_poly_head->next;
+    // add the terms of same exponent
     for(int i = 0; i < return_len; i++)
     {
       Listnode *temp = new Listnode;
@@ -130,10 +129,9 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
         temp = temp->next;
       }
       return_poly = return_poly->next;
-      temp = NULL;
-      delete temp;
     }
     return_poly = return_poly_head->next;
+    // delete the 0 coeficient terms
     for(int i = 0; i < temp_len; i++)
     {
       if(return_poly->next != NULL) {return_poly = return_poly->next;}
@@ -164,13 +162,13 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
       for(int i = 0; i < 2; i++) {delete_poly_table_node(poly_table->next, poly_table);}
       for(int i = 1; i < len_1; i++) {delete_node(delete_start->next, delete_start);}
     }
-    else
+    else // delete the last polynomial
     {
       Polytable *delete_table_start = new Polytable;
-      delete_table_start = poly_table->next;
+      delete_table_start = poly_table->next; // delete polymial head
       poly_table->next = NULL;
-      delete_start = poly->next;
-      poly_address->tail = poly;
+      delete_start = poly->next; // delete polymial head
+      poly_address->tail = poly; // change the polynomial tail
       poly->next = NULL;
       len_1 = delete_start->value.len;
       delete_poly_table_node(delete_table_start->next, delete_table_start);
@@ -186,7 +184,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   }
   if(operation_id != 4)
   {
-
+    // append polynomial
     if(return_len == 1 || return_len == 0)
     {
       if(return_poly->value.coef == 0) {add_node(1, 0, 0, 0, 0, poly, poly_address);}
@@ -199,6 +197,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     }
     else
     {
+      // sort the exponent
       return_poly = return_poly_head->next;
       bubble_sort(return_poly, return_len, 0);
       bubble_sort(return_poly, return_len, 1);
@@ -217,6 +216,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
       poly_table->next = add_poly_table_node(poly_address->tail);
     }
   }
+  // free the memory
   return_poly = return_poly_head->next;
   for(int i = 0; i < len_1; i++) {if(poly_1->next != NULL) {delete_node(poly_1->next, poly_1);}}
   for(int i = 0; i < len_2; i++) {if(poly_2->next != NULL) {delete_node(poly_2->next, poly_2);}}
@@ -227,11 +227,9 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   poly_1_head = NULL;
   poly_2_head = NULL;
   return_poly_head = NULL;
-  poly_table_head = NULL;
   delete poly_1_head;
   delete poly_2_head;
   delete return_poly_head;
-  delete poly_table_head;
 }
 
 void print_node(Listnode *poly)
@@ -243,36 +241,28 @@ void print_node(Listnode *poly)
   }
 }
 
-void swap_coef_exp(Listnode *x, Listnode *y)
+void swap_coef_exp(Polynomial *x, Polynomial *y)
 {
-  // printf("before\n%d %d %d %d\n", x->value.coef, x->value.exp_x, x->value.exp_y, x->value.exp_z);
-  // printf("%d %d %d %d\n", y->value.coef, y->value.exp_x, y->value.exp_y, y->value.exp_z);
-  Listnode temp;
+  Polynomial temp;
   // temp = x
-  temp.value.coef = x->value.coef;
-  temp.value.exp_x = x->value.exp_x;
-  temp.value.exp_y = x->value.exp_y;
-  temp.value.exp_z = x->value.exp_z;
+  temp.coef = x->coef;
+  temp.exp_x = x->exp_x;
+  temp.exp_y = x->exp_y;
+  temp.exp_z = x->exp_z;
   // x = y
-  x->value.coef = y->value.coef;
-  x->value.exp_x = y->value.exp_x;
-  x->value.exp_y = y->value.exp_y;
-  x->value.exp_z = y->value.exp_z;
+  x->coef = y->coef;
+  x->exp_x = y->exp_x;
+  x->exp_y = y->exp_y;
+  x->exp_z = y->exp_z;
   // y = x
-  y->value.coef = temp.value.coef;
-  y->value.exp_x = temp.value.exp_x;
-  y->value.exp_y = temp.value.exp_y;
-  y->value.exp_z = temp.value.exp_z;
-  // printf("after\n%d %d %d %d\n", x->value.coef, x->value.exp_x, x->value.exp_y, x->value.exp_z);
-  // printf("%d %d %d %d\n", y->value.coef, y->value.exp_x, y->value.exp_y, y->value.exp_z);
+  y->coef = temp.coef;
+  y->exp_x = temp.exp_x;
+  y->exp_y = temp.exp_y;
+  y->exp_z = temp.exp_z;
 }
 
 void bubble_sort(Listnode *poly, int len, int count)
 {
-  // Listnode *copy_poly = new Listnode;
-  // Listnode *head = new Listnode;
-  // copy_poly = copy(poly, len);
-  // head = poly;
   for(int i = 0; i < len; i++)
   {
     Listnode *temp = new Listnode;
@@ -282,12 +272,12 @@ void bubble_sort(Listnode *poly, int len, int count)
       switch(count)
       {
         case 0:
-          if(poly->value.exp_x <= temp->value.exp_x) {swap_coef_exp(poly, temp);}
+          if(poly->value.exp_x <= temp->value.exp_x) {swap_coef_exp(&poly->value, &temp->value);}
           break;
         case 1:
           if(poly->value.exp_x == temp->value.exp_x)
           {
-            if(poly->value.exp_y <= temp->value.exp_y) {swap_coef_exp(poly, temp);}
+            if(poly->value.exp_y <= temp->value.exp_y) {swap_coef_exp(&poly->value, &temp->value);}
           }
           break;
         case 2:
@@ -295,7 +285,7 @@ void bubble_sort(Listnode *poly, int len, int count)
           {
             if(poly->value.exp_y == temp->value.exp_y)
             {
-              if(poly->value.exp_z < temp->value.exp_z) {swap_coef_exp(poly, temp);}
+              if(poly->value.exp_z < temp->value.exp_z) {swap_coef_exp(&poly->value, &temp->value);}
             }
           }
           break;
@@ -303,8 +293,6 @@ void bubble_sort(Listnode *poly, int len, int count)
       temp = temp->next;
     }
     poly = poly->next;
-    temp = NULL;
-    delete temp;
   }
 }
 
@@ -347,6 +335,8 @@ Listnode* copy(Listnode *poly, int count)
 
 void delete_node(Listnode *del_next, Listnode *del)
 {
+  // move the next node value to the delete one
+  // delete the next node
   del->value.coef = del_next->value.coef;
   del->value.exp_x = del_next->value.exp_x;
   del->value.exp_y = del_next->value.exp_y;
@@ -358,6 +348,8 @@ void delete_node(Listnode *del_next, Listnode *del)
 
 void delete_poly_table_node(Polytable *del_next, Polytable *del)
 {
+  // move the next node value to the delete one
+  // delete the next node
   del->address = del_next->address;
   del->next = del_next->next;
   del_next->address = NULL;
