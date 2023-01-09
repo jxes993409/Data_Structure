@@ -526,10 +526,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     }
     else
     {
-      // sort the exponent
-      // bubble_sort(return_poly, return_len, 0);
-      // bubble_sort(return_poly, return_len, 1);
-      // bubble_sort(return_poly, return_len, 2);
       for(int i = 0; i < return_len; i++)
       {
         add_node(return_len, return_poly->value.coef, return_poly->value.exp_x, return_poly->value.exp_y, return_poly->value.exp_z, poly, poly_address);
@@ -571,61 +567,6 @@ void print_node(Listnode *poly, int i)
       printf("%d %d %d %d\n", poly->value.coef, poly->value.exp_x, poly->value.exp_y, poly->value.exp_z);
       poly = poly->next;
     }
-  }
-}
-
-void swap_coef_exp(Polynomial *x, Polynomial *y)
-{
-  Polynomial temp;
-  // temp = x
-  temp.coef = x->coef;
-  temp.exp_x = x->exp_x;
-  temp.exp_y = x->exp_y;
-  temp.exp_z = x->exp_z;
-  // x = y
-  x->coef = y->coef;
-  x->exp_x = y->exp_x;
-  x->exp_y = y->exp_y;
-  x->exp_z = y->exp_z;
-  // y = x
-  y->coef = temp.coef;
-  y->exp_x = temp.exp_x;
-  y->exp_y = temp.exp_y;
-  y->exp_z = temp.exp_z;
-}
-
-void bubble_sort(Listnode *poly, int len, int count)
-{
-  for(int i = 0; i < len; i++)
-  {
-    Listnode *temp = new Listnode;
-    temp = poly->next;
-    for(int j = i + 1; j < len; j++)
-    {
-      switch(count)
-      {
-        case 0:
-          if(poly->value.exp_x <= temp->value.exp_x) {swap_coef_exp(&poly->value, &temp->value);}
-          break;
-        case 1:
-          if(poly->value.exp_x == temp->value.exp_x)
-          {
-            if(poly->value.exp_y <= temp->value.exp_y) {swap_coef_exp(&poly->value, &temp->value);}
-          }
-          break;
-        case 2:
-          if(poly->value.exp_x == temp->value.exp_x)
-          {
-            if(poly->value.exp_y == temp->value.exp_y)
-            {
-              if(poly->value.exp_z < temp->value.exp_z) {swap_coef_exp(&poly->value, &temp->value);}
-            }
-          }
-          break;
-      }
-      temp = temp->next;
-    }
-    poly = poly->next;
   }
 }
 
