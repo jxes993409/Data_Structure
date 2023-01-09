@@ -12,29 +12,32 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   Listnode *poly_2_head = new Listnode;
   Listnode *return_poly_head = new Listnode;
   Polytable poly_table_head;
-
-  return_poly_head = return_poly;
-  poly_table_head = *poly_table;
   int len_1 = 0, len_2 = 0, return_len = 0;
 
-  for(int i = 0; i < poly_1_pos; i++)
+  if(operation_id != 4)
   {
-    poly_table = poly_table->next;
-    poly_table = poly_table->next;
-  }
-  poly = poly_table->address; // poly_1 head
-  poly_1 = copy(poly, poly->value.len);
-  poly_1_head = poly_1;
+    return_poly_head = return_poly;
+    poly_table_head = *poly_table;
 
-  poly_table = &poly_table_head;
-  for(int i = 0; i < poly_2_pos; i++)
-  {
-    poly_table = poly_table->next;
-    poly_table = poly_table->next;
+    for(int i = 0; i < poly_1_pos; i++)
+    {
+      poly_table = poly_table->next;
+      poly_table = poly_table->next;
+    }
+    poly = poly_table->address; // poly_1 head
+    poly_1 = copy(poly, poly->value.len);
+    poly_1_head = poly_1;
+
+    poly_table = &poly_table_head;
+    for(int i = 0; i < poly_2_pos; i++)
+    {
+      poly_table = poly_table->next;
+      poly_table = poly_table->next;
+    }
+    poly = poly_table->address; // poly_2 head
+    poly_2 = copy(poly, poly->value.len);
+    poly_2_head = poly_2;
   }
-  poly = poly_table->address; // poly_2 head
-  poly_2 = copy(poly, poly->value.len);
-  poly_2_head = poly_2;
 
   if(operation_id == 1 || operation_id == 2)
   {
@@ -44,21 +47,161 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     {
       for(int j = 0; j < len_2; j++)
       {
+        return_poly = return_poly_head;
         if(poly_1->value.exp_x == poly_2->value.exp_x && poly_1->value.exp_y == poly_2->value.exp_y && poly_1->value.exp_z == poly_2->value.exp_z)
         {
           poly_1->value.be_calc = 1;
           poly_2->value.be_calc = 1;
           if((poly_1->value.coef + poly_2->value.coef) != 0 && operation_id == 1)
           {
-            return_len++;
-            return_poly->next = create_node(0, poly_1->value.coef + poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
-            return_poly = return_poly->next;
+            return_poly = return_poly_head;
+            if(return_poly->next == NULL)
+            {
+              return_len++;
+              return_poly->next = create_node(0, poly_1->value.coef + poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+            }
+            else
+            {
+              Listnode *previous_node = new Listnode;
+              Listnode *temp = new Listnode;
+              int flag = 0;
+              previous_node = return_poly_head;
+              temp = create_node(0, poly_1->value.coef + poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+              return_poly = return_poly->next;
+              while(return_poly != NULL)
+              {
+                if(return_poly->value.exp_x < temp->value.exp_x)
+                {
+                  flag = 1;
+                  return_len++;
+                  insert_node(previous_node, return_poly, temp);
+                  break;
+                }
+                else if(return_poly->value.exp_x > temp->value.exp_x)
+                {
+                  previous_node = return_poly;
+                  return_poly = return_poly->next;
+                }
+                else if(return_poly->value.exp_x == temp->value.exp_x)
+                {
+                  if(return_poly->value.exp_y < temp->value.exp_y)
+                  {
+                    flag = 1;
+                    return_len++;
+                    insert_node(previous_node, return_poly, temp);
+                    break;
+                  }
+                  else if(return_poly->value.exp_y > temp->value.exp_y)
+                  {
+                    previous_node = return_poly;
+                    return_poly = return_poly->next;
+                  }
+                  else if(return_poly->value.exp_y == temp->value.exp_y)
+                  {
+                    if(return_poly->value.exp_z < temp->value.exp_z)
+                    {
+                      flag = 1;
+                      return_len++;
+                      insert_node(previous_node, return_poly, temp);
+                      break;
+                    }
+                    else if(return_poly->value.exp_z > temp->value.exp_z)
+                    {
+                      previous_node = return_poly;
+                      return_poly = return_poly->next;
+                    }
+                  }
+                }
+              }
+              // printf("%p\n", return_poly);
+              if(!flag)
+              {
+                return_len++;
+                previous_node->next = temp;
+              }
+              temp = NULL;
+              previous_node = NULL;
+              delete temp;
+              delete previous_node;
+            }
+            poly_2 = poly_2_head;
+            break;
           }
           if((poly_1->value.coef - poly_2->value.coef) != 0 && operation_id == 2)
           {
-            return_len++;
-            return_poly->next = create_node(0, poly_1->value.coef - poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
-            return_poly = return_poly->next;
+            return_poly = return_poly_head;
+            if(return_poly->next == NULL)
+            {
+              return_len++;
+              return_poly->next = create_node(0, poly_1->value.coef - poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+            }
+            else
+            {
+              Listnode *previous_node = new Listnode;
+              Listnode *temp = new Listnode;
+              int flag = 0;
+              previous_node = return_poly_head;
+              temp = create_node(0, poly_1->value.coef - poly_2->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+              return_poly = return_poly->next;
+              while(return_poly != NULL)
+              {
+                if(return_poly->value.exp_x < temp->value.exp_x)
+                {
+                  flag = 1;
+                  return_len++;
+                  insert_node(previous_node, return_poly, temp);
+                  break;
+                }
+                else if(return_poly->value.exp_x > temp->value.exp_x)
+                {
+                  previous_node = return_poly;
+                  return_poly = return_poly->next;
+                }
+                else if(return_poly->value.exp_x == temp->value.exp_x)
+                {
+                  if(return_poly->value.exp_y < temp->value.exp_y)
+                  {
+                    flag = 1;
+                    return_len++;
+                    insert_node(previous_node, return_poly, temp);
+                    break;
+                  }
+                  else if(return_poly->value.exp_y > temp->value.exp_y)
+                  {
+                    previous_node = return_poly;
+                    return_poly = return_poly->next;
+                  }
+                  else if(return_poly->value.exp_y == temp->value.exp_y)
+                  {
+                    if(return_poly->value.exp_z < temp->value.exp_z)
+                    {
+                      flag = 1;
+                      return_len++;
+                      insert_node(previous_node, return_poly, temp);
+                      break;
+                    }
+                    else if(return_poly->value.exp_z > temp->value.exp_z)
+                    {
+                      previous_node = return_poly;
+                      return_poly = return_poly->next;
+                    }
+                  }
+                }
+              }
+              // printf("%p\n", return_poly);
+              if(!flag)
+              {
+                return_len++;
+                previous_node->next = temp;
+              }
+              temp = NULL;
+              previous_node = NULL;
+              delete temp;
+              delete previous_node;
+            }
+            poly_2 = poly_2_head;
+            // printf("break!\n");
+            break;
           }
         }
         if(poly_2->next != NULL) {poly_2 = poly_2->next;}
@@ -67,26 +210,164 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
       if(poly_1->next != NULL) {poly_1 = poly_1->next;}
       else {poly_1 = poly_1_head;}
     }
+
     // append remaining terms
+    poly_1 = poly_1_head;
     for(int i = 0; i < len_1; i++)
     {
       if(!poly_1->value.be_calc)
       {
-        return_len++;
-        return_poly->next = create_node(0, poly_1->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
-        return_poly = return_poly->next;
+        return_poly = return_poly_head;
+        if(return_poly->next == NULL)
+        {
+          return_len++;
+          return_poly->next = create_node(0, poly_1->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+        }
+        else
+        {
+          Listnode *previous_node = new Listnode;
+          Listnode *temp = new Listnode;
+          int flag = 0;
+          previous_node = return_poly_head;
+          temp = create_node(0, poly_1->value.coef, poly_1->value.exp_x, poly_1->value.exp_y, poly_1->value.exp_z);
+          return_poly = return_poly->next;
+          while(return_poly != NULL)
+          {
+            if(return_poly->value.exp_x < temp->value.exp_x)
+            {
+              flag = 1;
+              return_len++;
+              insert_node(previous_node, return_poly, temp);
+              break;
+            }
+            else if(return_poly->value.exp_x > temp->value.exp_x)
+            {
+              previous_node = return_poly;
+              return_poly = return_poly->next;
+            }
+            else if(return_poly->value.exp_x == temp->value.exp_x)
+            {
+              if(return_poly->value.exp_y < temp->value.exp_y)
+              {
+                flag = 1;
+                return_len++;
+                insert_node(previous_node, return_poly, temp);
+                break;
+              }
+              else if(return_poly->value.exp_y > temp->value.exp_y)
+              {
+                previous_node = return_poly;
+                return_poly = return_poly->next;
+              }
+              else if(return_poly->value.exp_y == temp->value.exp_y)
+              {
+                if(return_poly->value.exp_z < temp->value.exp_z)
+                {
+                  flag = 1;
+                  return_len++;
+                  insert_node(previous_node, return_poly, temp);
+                  break;
+                }
+                else if(return_poly->value.exp_z > temp->value.exp_z)
+                {
+                  previous_node = return_poly;
+                  return_poly = return_poly->next;
+                }
+              }
+            }
+          }
+          // printf("%p\n", return_poly);
+          if(!flag)
+          {
+            return_len++;
+            previous_node->next = temp;
+          }
+          temp = NULL;
+          previous_node = NULL;
+          delete temp;
+          delete previous_node;
+        }
       }
       if(poly_1->next != NULL) {poly_1 = poly_1->next;}
       else {poly_1 = poly_1_head;}
     }
+    poly_2 = poly_2_head;
     for(int i = 0; i < len_2; i++)
     {
       if(!poly_2->value.be_calc)
       {
-        return_len++;
-        if(operation_id == 1) {return_poly->next = create_node(0, poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
-        else {return_poly->next = create_node(0, -poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
-        return_poly = return_poly->next;
+        return_poly = return_poly_head;
+        if(return_poly->next == NULL)
+        {
+          return_len++;
+          if(operation_id == 1) {return_poly->next = create_node(0, poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
+          else {return_poly->next = create_node(0, -poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
+        }
+        else
+        {
+          Listnode *previous_node = new Listnode;
+          Listnode *temp = new Listnode;
+          int flag = 0;
+          previous_node = return_poly_head;
+          if(operation_id == 1) {temp = create_node(0, poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
+          else {temp = create_node(0, -poly_2->value.coef, poly_2->value.exp_x, poly_2->value.exp_y, poly_2->value.exp_z);}
+          return_poly = return_poly->next;
+          while(return_poly != NULL)
+          {
+            if(return_poly->value.exp_x < temp->value.exp_x)
+            {
+              flag = 1;
+              return_len++;
+              insert_node(previous_node, return_poly, temp);
+              break;
+            }
+            else if(return_poly->value.exp_x > temp->value.exp_x)
+            {
+              previous_node = return_poly;
+              return_poly = return_poly->next;
+            }
+            else if(return_poly->value.exp_x == temp->value.exp_x)
+            {
+              if(return_poly->value.exp_y < temp->value.exp_y)
+              {
+                flag = 1;
+                return_len++;
+                insert_node(previous_node, return_poly, temp);
+                break;
+              }
+              else if(return_poly->value.exp_y > temp->value.exp_y)
+              {
+                previous_node = return_poly;
+                return_poly = return_poly->next;
+              }
+              else if(return_poly->value.exp_y == temp->value.exp_y)
+              {
+                if(return_poly->value.exp_z < temp->value.exp_z)
+                {
+                  flag = 1;
+                  return_len++;
+                  insert_node(previous_node, return_poly, temp);
+                  break;
+                }
+                else if(return_poly->value.exp_z > temp->value.exp_z)
+                {
+                  previous_node = return_poly;
+                  return_poly = return_poly->next;
+                }
+              }
+            }
+          }
+          // printf("%p\n", return_poly);
+          if(!flag)
+          {
+            return_len++;
+            previous_node->next = temp;
+          }
+          temp = NULL;
+          previous_node = NULL;
+          delete temp;
+          delete previous_node;
+        }
       }
       if(poly_2->next != NULL) {poly_2 = poly_2->next;}
       else {poly_2 = poly_2_head;}
@@ -96,51 +377,98 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   {
     len_1 = poly_1->value.len;
     len_2 = poly_2->value.len;
-    int temp_len = len_1 * len_2;
-    return_len = temp_len;
+    return_len = 0;
     for(int i = 0; i < len_2; i++)
     {
       for(int j = 0; j < len_1; j++)
       {
-        return_poly->next = create_node(0, poly_1->value.coef * poly_2->value.coef, poly_1->value.exp_x + poly_2->value.exp_x, poly_1->value.exp_y + poly_2->value.exp_y, poly_1->value.exp_z + poly_2->value.exp_z);
-        return_poly = return_poly->next;
+        return_poly = return_poly_head;
+        if(return_poly->next == NULL)
+        {
+          return_len++;
+          return_poly->next = create_node(0, poly_1->value.coef * poly_2->value.coef, poly_1->value.exp_x + poly_2->value.exp_x, poly_1->value.exp_y + poly_2->value.exp_y, poly_1->value.exp_z + poly_2->value.exp_z);
+        }
+        else
+        {
+          Listnode *previous_node = new Listnode;
+          Listnode *temp = new Listnode;
+          int flag = 0;
+          previous_node = return_poly_head;
+          temp = create_node(0, poly_1->value.coef * poly_2->value.coef, poly_1->value.exp_x + poly_2->value.exp_x, poly_1->value.exp_y + poly_2->value.exp_y, poly_1->value.exp_z + poly_2->value.exp_z);
+          return_poly = return_poly->next;
+          while(return_poly != NULL)
+          {
+            if(return_poly->value.exp_x < temp->value.exp_x)
+            {
+              flag = 1;
+              return_len++;
+              insert_node(previous_node, return_poly, temp);
+              break;
+            }
+            else if(return_poly->value.exp_x > temp->value.exp_x)
+            {
+              previous_node = return_poly;
+              return_poly = return_poly->next;
+            }
+            else if(return_poly->value.exp_x == temp->value.exp_x)
+            {
+              if(return_poly->value.exp_y < temp->value.exp_y)
+              {
+                flag = 1;
+                return_len++;
+                insert_node(previous_node, return_poly, temp);
+                break;
+              }
+              else if(return_poly->value.exp_y > temp->value.exp_y)
+              {
+                previous_node = return_poly;
+                return_poly = return_poly->next;
+              }
+              else if(return_poly->value.exp_y == temp->value.exp_y)
+              {
+                if(return_poly->value.exp_z < temp->value.exp_z)
+                {
+                  flag = 1;
+                  return_len++;
+                  insert_node(previous_node, return_poly, temp);
+                  break;
+                }
+                else if(return_poly->value.exp_z > temp->value.exp_z)
+                {
+                  previous_node = return_poly;
+                  return_poly = return_poly->next;
+                }
+                else if(return_poly->value.exp_z == temp->value.exp_z)
+                {
+                  flag = 1;
+                  if((return_poly->value.coef + temp->value.coef) != 0) {return_poly->value.coef += temp->value.coef;}
+                  else
+                  {
+                    return_len--;
+                    if(return_poly->next == NULL) {delete return_poly;}
+                    else {delete_node(return_poly->next, return_poly);}
+                  }
+                  break;
+                }
+              }
+            }
+          }
+          // printf("%p\n", return_poly);
+          if(!flag)
+          {
+            return_len++;
+            previous_node->next = temp;
+          }
+          temp = NULL;
+          previous_node = NULL;
+          delete temp;
+          delete previous_node;
+        }
         if(poly_1->next != NULL) {poly_1 = poly_1->next;}
         else {poly_1 = poly_1_head;}
       }
       if(poly_2->next != NULL) {{poly_2 = poly_2->next;}}
       else {poly_2 = poly_2_head;}
-    }
-    return_poly = return_poly_head->next;
-    // add the terms of same exponent
-    for(int i = 0; i < return_len; i++)
-    {
-      Listnode *temp = new Listnode;
-      temp = return_poly->next;
-      for(int j = i + 1; j < return_len; j++)
-      {
-        if(return_poly->value.exp_x == temp->value.exp_x && return_poly->value.exp_y == temp->value.exp_y && return_poly->value.exp_z == temp->value.exp_z)
-        {
-          return_poly->value.coef = return_poly->value.coef + temp->value.coef;
-          temp->value.coef = 0;
-          temp->value.exp_x = 0;
-          temp->value.exp_y = 0;
-          temp->value.exp_z = 0;
-        }
-        temp = temp->next;
-      }
-      return_poly = return_poly->next;
-    }
-    return_poly = return_poly_head->next;
-    // delete the 0 coeficient terms
-    for(int i = 0; i < temp_len; i++)
-    {
-      if(return_poly->next != NULL) {return_poly = return_poly->next;}
-      else {return_poly = return_poly;}
-      while(return_poly->value.coef == 0 && return_poly->next != NULL)
-      {
-        delete_node(return_poly->next, return_poly);
-        return_len--;
-      }
     }
   }
   else if(operation_id == 4)
@@ -184,9 +512,10 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   }
   if(operation_id != 4)
   {
-    // append polynomial
+    if(return_len) {return_poly = return_poly_head->next;}
     if(return_len == 1 || return_len == 0)
     {
+      print_node(return_poly, 1);
       if(return_poly->value.coef == 0) {add_node(1, 0, 0, 0, 0, poly, poly_address);}
       else {add_node(1, return_poly->value.coef, return_poly->value.exp_x, return_poly->value.exp_y, return_poly->value.exp_z, poly, poly_address);}
       for(int i = 0; i < 2; i++)
@@ -198,10 +527,9 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     else
     {
       // sort the exponent
-      return_poly = return_poly_head->next;
-      bubble_sort(return_poly, return_len, 0);
-      bubble_sort(return_poly, return_len, 1);
-      bubble_sort(return_poly, return_len, 2);
+      // bubble_sort(return_poly, return_len, 0);
+      // bubble_sort(return_poly, return_len, 1);
+      // bubble_sort(return_poly, return_len, 2);
       for(int i = 0; i < return_len; i++)
       {
         add_node(return_len, return_poly->value.coef, return_poly->value.exp_x, return_poly->value.exp_y, return_poly->value.exp_z, poly, poly_address);
@@ -217,7 +545,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     }
   }
   // free the memory
-  return_poly = return_poly_head->next;
+  return_poly = return_poly_head;
   for(int i = 0; i < len_1; i++) {if(poly_1->next != NULL) {delete_node(poly_1->next, poly_1);}}
   for(int i = 0; i < len_2; i++) {if(poly_2->next != NULL) {delete_node(poly_2->next, poly_2);}}
   for(int i = 0; i < return_len; i++) {if(return_poly->next != NULL) {delete_node(return_poly->next, return_poly);}}
@@ -230,14 +558,19 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   delete poly_1_head;
   delete poly_2_head;
   delete return_poly_head;
+  
 }
 
-void print_node(Listnode *poly)
+void print_node(Listnode *poly, int i)
 {
-  while(poly != NULL)
+  if(!i) {printf("%d %d %d %d\n", poly->value.coef, poly->value.exp_x, poly->value.exp_y, poly->value.exp_z);}
+  else
   {
-    printf("%d %d %d %d\n", poly->value.coef, poly->value.exp_x, poly->value.exp_y, poly->value.exp_z);
-    poly = poly->next;
+    while(poly != NULL)
+    {
+      printf("%d %d %d %d\n", poly->value.coef, poly->value.exp_x, poly->value.exp_y, poly->value.exp_z);
+      poly = poly->next;
+    }
   }
 }
 
@@ -354,4 +687,11 @@ void delete_poly_table_node(Polytable *del_next, Polytable *del)
   del->next = del_next->next;
   del_next->address = NULL;
   delete del_next;
+}
+
+void insert_node(Listnode *poly, Listnode *poly_next, Listnode *newnode)
+{
+  // poly->next = NULL;
+  poly->next = newnode;
+  newnode->next = poly_next;
 }

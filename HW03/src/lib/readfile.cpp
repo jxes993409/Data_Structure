@@ -11,19 +11,20 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
   char *line = new char[50];
   int *num = new int[3]();
   int *coef_exp = new int[4]();
-  Polytable poly_table_head;
-  poly_table_head = *poly_table;
+  Polytable *poly_table_head = new Polytable;
+  poly_table_head = poly_table;
 
   while((fscanf(input_file, "%[^\n]%*c", line)) != EOF)
   {
-    poly_table = &poly_table_head;
+    poly_table = poly_table_head;
     // Operation ID: 0
     if(line[0] == '0')
     {
       get_num(line, num, 0);
-      // printf("0 %d\n", num[0]);
+      printf("0 %d\n", num[0]);
       for(int i = 0; i < num[0]; i++)
       {
+        printf("----------\n");
         fscanf(input_file, "%[^\n]%*c", line);
         get_coef_exp(line, coef_exp);
         add_node(num[0], coef_exp[0], coef_exp[1], coef_exp[2], coef_exp[3], poly, poly_address);
@@ -40,31 +41,39 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
     else if(line[0] == '1')
     {
       get_num(line, num, 1);
-      // printf("1 %d %d\n", num[0], num[1]);
-      calc(1, num[0], num[1], poly, poly_address, poly_table_head.next);
+      printf("1 %d %d\n", num[0], num[1]);
+      calc(1, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 2 (-)
     else if(line[0] == '2')
     {
       get_num(line, num, 1);
-      // printf("2 %d %d\n", num[0], num[1]);
-      calc(2, num[0], num[1], poly, poly_address, poly_table_head.next);
+      printf("2 %d %d\n", num[0], num[1]);
+      calc(2, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 3
     else if(line[0] == '3')
     {
       get_num(line, num, 1);
-      // printf("3 %d %d\n", num[0], num[1]);
-      calc(3, num[0], num[1], poly, poly_address, poly_table_head.next);
+      printf("3 %d %d\n", num[0], num[1]);
+      calc(3, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 4
     else if(line[0] == '4')
     {
       get_num(line, num, 0);
-      // printf("4 %d\n", num[0]);
-      calc(4, num[0], -1, poly, poly_address, &poly_table_head);
+      printf("4 %d\n", num[0]);
+      calc(4, num[0], -1, poly, poly_address, poly_table_head);
     }
+    poly_table = poly_table_head;
+    while(poly_table != NULL)
+    {
+      print_node(poly_table->address, 0);
+      poly_table = poly_table->next;
+    }
+    printf("****\n");
   }
+  // 
   // free the memory and close the file
   delete [] line;
   delete [] num;
