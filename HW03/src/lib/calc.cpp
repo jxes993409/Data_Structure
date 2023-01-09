@@ -515,7 +515,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
     if(return_len) {return_poly = return_poly_head->next;}
     if(return_len == 1 || return_len == 0)
     {
-      print_node(return_poly, 1);
       if(return_poly->value.coef == 0) {add_node(1, 0, 0, 0, 0, poly, poly_address);}
       else {add_node(1, return_poly->value.coef, return_poly->value.exp_x, return_poly->value.exp_y, return_poly->value.exp_z, poly, poly_address);}
       for(int i = 0; i < 2; i++)

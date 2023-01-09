@@ -24,7 +24,6 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
       printf("0 %d\n", num[0]);
       for(int i = 0; i < num[0]; i++)
       {
-        printf("----------\n");
         fscanf(input_file, "%[^\n]%*c", line);
         get_coef_exp(line, coef_exp);
         add_node(num[0], coef_exp[0], coef_exp[1], coef_exp[2], coef_exp[3], poly, poly_address);
@@ -65,13 +64,13 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
       printf("4 %d\n", num[0]);
       calc(4, num[0], -1, poly, poly_address, poly_table_head);
     }
-    poly_table = poly_table_head;
-    while(poly_table != NULL)
-    {
-      print_node(poly_table->address, 0);
-      poly_table = poly_table->next;
-    }
-    printf("****\n");
+    // poly_table = poly_table_head;
+    // while(poly_table != NULL)
+    // {
+    //   print_node(poly_table->address, 0);
+    //   poly_table = poly_table->next;
+    // }
+    // printf("****\n");
   }
   // 
   // free the memory and close the file
