@@ -21,7 +21,7 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
     if(line[0] == '0')
     {
       get_num(line, num, 0);
-      printf("0 %d\n", num[0]);
+      // printf("0 %d\n", num[0]);
       for(int i = 0; i < num[0]; i++)
       {
         fscanf(input_file, "%[^\n]%*c", line);
@@ -40,39 +40,31 @@ void read_file(const char filename[], Listnode *poly, Polyaddress *poly_address,
     else if(line[0] == '1')
     {
       get_num(line, num, 1);
-      printf("1 %d %d\n", num[0], num[1]);
+      // printf("1 %d %d\n", num[0], num[1]);
       calc(1, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 2 (-)
     else if(line[0] == '2')
     {
       get_num(line, num, 1);
-      printf("2 %d %d\n", num[0], num[1]);
+      // printf("2 %d %d\n", num[0], num[1]);
       calc(2, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 3
     else if(line[0] == '3')
     {
       get_num(line, num, 1);
-      printf("3 %d %d\n", num[0], num[1]);
+      // printf("3 %d %d\n", num[0], num[1]);
       calc(3, num[0], num[1], poly, poly_address, poly_table_head->next);
     }
     // Operation ID: 4
     else if(line[0] == '4')
     {
       get_num(line, num, 0);
-      printf("4 %d\n", num[0]);
+      // printf("4 %d\n", num[0]);
       calc(4, num[0], -1, poly, poly_address, poly_table_head);
     }
-    // poly_table = poly_table_head;
-    // while(poly_table != NULL)
-    // {
-    //   print_node(poly_table->address, 0);
-    //   poly_table = poly_table->next;
-    // }
-    // printf("****\n");
   }
-  // 
   // free the memory and close the file
   delete [] line;
   delete [] num;

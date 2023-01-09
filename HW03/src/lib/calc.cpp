@@ -376,6 +376,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   {
     len_1 = poly_1->value.len;
     len_2 = poly_2->value.len;
+    // if(poly_1_pos == 92 && poly_2_pos == 44) {print_node(poly_1_head, 1);print_node(poly_2_head, 1);}
     return_len = 0;
     for(int i = 0; i < len_2; i++)
     {
@@ -444,7 +445,11 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
                   else
                   {
                     return_len--;
-                    if(return_poly->next == NULL) {delete return_poly;}
+                    if(return_poly->next == NULL)
+                    {
+                      previous_node->next = NULL;
+                      delete return_poly;
+                    }
                     else {delete_node(return_poly->next, return_poly);}
                   }
                   break;
@@ -511,6 +516,7 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   }
   if(operation_id != 4)
   {
+    
     if(return_len) {return_poly = return_poly_head->next;}
     if(return_len == 1 || return_len == 0)
     {
