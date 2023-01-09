@@ -113,7 +113,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
                   }
                 }
               }
-              // printf("%p\n", return_poly);
               if(!flag)
               {
                 return_len++;
@@ -188,7 +187,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
                   }
                 }
               }
-              // printf("%p\n", return_poly);
               if(!flag)
               {
                 return_len++;
@@ -200,7 +198,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
               delete previous_node;
             }
             poly_2 = poly_2_head;
-            // printf("break!\n");
             break;
           }
         }
@@ -356,7 +353,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
               }
             }
           }
-          // printf("%p\n", return_poly);
           if(!flag)
           {
             return_len++;
@@ -376,13 +372,13 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
   {
     len_1 = poly_1->value.len;
     len_2 = poly_2->value.len;
-    // if(poly_1_pos == 92 && poly_2_pos == 44) {print_node(poly_1_head, 1);print_node(poly_2_head, 1);}
     return_len = 0;
     for(int i = 0; i < len_2; i++)
     {
       for(int j = 0; j < len_1; j++)
       {
         return_poly = return_poly_head;
+        // first node
         if(return_poly->next == NULL)
         {
           return_len++;
@@ -396,6 +392,8 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
           previous_node = return_poly_head;
           temp = create_node(0, poly_1->value.coef * poly_2->value.coef, poly_1->value.exp_x + poly_2->value.exp_x, poly_1->value.exp_y + poly_2->value.exp_y, poly_1->value.exp_z + poly_2->value.exp_z);
           return_poly = return_poly->next;
+          // search from head to tail, if flag = 0 -> append the node
+          //                           if flag = 1 -> insert the node 
           while(return_poly != NULL)
           {
             if(return_poly->value.exp_x < temp->value.exp_x)
@@ -441,9 +439,12 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
                 else if(return_poly->value.exp_z == temp->value.exp_z)
                 {
                   flag = 1;
+                  // if coef != 0 add the coef
                   if((return_poly->value.coef + temp->value.coef) != 0) {return_poly->value.coef += temp->value.coef;}
                   else
                   {
+                    // if the node is tail, then previous_node->next = NULL and free the node
+                    // else delete the node
                     return_len--;
                     if(return_poly->next == NULL)
                     {
@@ -457,7 +458,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
               }
             }
           }
-          // printf("%p\n", return_poly);
           if(!flag)
           {
             return_len++;
@@ -636,7 +636,6 @@ void delete_poly_table_node(Polytable *del_next, Polytable *del)
 
 void insert_node(Listnode *poly, Listnode *poly_next, Listnode *newnode)
 {
-  // poly->next = NULL;
   poly->next = newnode;
   newnode->next = poly_next;
 }
