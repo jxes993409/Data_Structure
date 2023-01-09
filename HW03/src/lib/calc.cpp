@@ -276,7 +276,6 @@ void calc(int operation_id, int poly_1_pos, int poly_2_pos, Listnode *poly, Poly
               }
             }
           }
-          // printf("%p\n", return_poly);
           if(!flag)
           {
             return_len++;
