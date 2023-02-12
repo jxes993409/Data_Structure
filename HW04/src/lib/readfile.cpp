@@ -27,25 +27,13 @@ void read_file(const char input_name[], const char output_name[], int *heap)
       size--;
     }
     // Operation ID: 2 (output with level-order)
-    else if(line[0] == '2')
-    {
-      write_output(output_name, heap, size, 2);
-    }
+    else if(line[0] == '2') {write_output(output_name, heap, size, 2);}
     // Operation ID: 3 (output with pre-order)
-    else if(line[0] == '3')
-    {
-      write_output(output_name, heap, size, 3);
-    }
+    else if(line[0] == '3') {write_output(output_name, heap, size, 3);}
     // Operation ID: 4 (output with in-order)
-    else if(line[0] == '4')
-    {
-      write_output(output_name, heap, size, 4);
-    }
+    else if(line[0] == '4') {write_output(output_name, heap, size, 4);}
     // Operation ID: 5 (output with post-order)
-    else if(line[0] == '5')
-    {
-      write_output(output_name, heap, size, 5);
-    }
+    else if(line[0] == '5') {write_output(output_name, heap, size, 5);}
   }
   // free the memory and close the file
   delete [] line;
@@ -54,6 +42,7 @@ void read_file(const char input_name[], const char output_name[], int *heap)
 
 void insert_node(int *heap, int size, int num)
 {
+  // new node >= parent node, swap new node and parent node
   heap[size] = num;
   while(heap[size] >= heap[size / 2] && size > 1)
   {
@@ -68,11 +57,13 @@ void delete_root(int *heap, int size)
   heap[1] = heap[size];
   while((heap[index] < heap[index * 2] || heap[index] < heap[index * 2 + 1]) && (index * 2) < size)
   {
+    // left node >= right node, swap parent and left node
     if(heap[index * 2] >= heap[index * 2 + 1])
     {
       swap(&heap[index], &heap[index * 2]);
       index *= 2;
     }
+    // left node < right node, swap parent and right node
     else
     {
       swap(&heap[index], &heap[index * 2 + 1]);
@@ -120,9 +111,9 @@ void preorder(FILE *output_file, int *heap, int size, int index)
 {
   if(index <= size)
   {
-    fprintf(output_file, "%d ", heap[index]);
-    preorder(output_file, heap, size, index * 2);
-    preorder(output_file, heap, size, index * 2 + 1);
+    fprintf(output_file, "%d ", heap[index]); // middle
+    preorder(output_file, heap, size, index * 2); // left
+    preorder(output_file, heap, size, index * 2 + 1); // right
   }
 }
 
@@ -130,9 +121,9 @@ void inorder(FILE *output_file, int *heap, int size, int index)
 {
   if(index <= size)
   {
-    inorder(output_file, heap, size, index * 2);
-    fprintf(output_file, "%d ", heap[index]);
-    inorder(output_file, heap, size, index * 2 + 1);
+    inorder(output_file, heap, size, index * 2); // left
+    fprintf(output_file, "%d ", heap[index]); // middle
+    inorder(output_file, heap, size, index * 2 + 1); // right
   }
 }
 
@@ -140,9 +131,9 @@ void postorder(FILE *output_file, int *heap, int size, int index)
 {
   if(index <= size)
   {
-    postorder(output_file, heap, size, index * 2);
-    postorder(output_file, heap, size, index * 2 + 1);
-    fprintf(output_file, "%d ", heap[index]);
+    postorder(output_file, heap, size, index * 2); // left
+    postorder(output_file, heap, size, index * 2 + 1); // right
+    fprintf(output_file, "%d ", heap[index]); // middle
   }
 }
 
