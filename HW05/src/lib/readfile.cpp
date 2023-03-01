@@ -4,44 +4,39 @@
 #include <ctype.h>
 #include "readfile.h"
 
-void read_file(const char input_name[], const char output_name[])
+void read_size(const char input_name[], int *size)
 {
   FILE *input_file = fopen(input_name, "r");
   char *line = new char[300];
-  int size = 0;
-  
-  // read the first line, and count the array size
+
   fscanf(input_file, "%[^\n]%*c", line);
   for(int i = 0; i < int(strlen(line)); i++)
   {
-    if(line[i] == ' ') {size++;}
+    if(line[i] == ' ') {*size = *size + 1;}
   }
 
-  // create 2-d array
-  int **length_array = new int*[size];
-  int *pi = new int[size];
-  int *dist = new int[size];
-  for(int i = 0; i < size; i++) {length_array[i] = new int[size]();}
-  for(int i = 0; i < size; i++)
-  {
-    get_num(line, length_array[i]);
-    fscanf(input_file, "%[^\n]%*c", line);
-  }
-
-  // Bellman-Ford's Algorithm
-  Bellman_Ford_Algorithm(length_array, pi, dist, size);
-  // write output
-  write_output(output_name, size, dist, pi);
   // free the memory and close the file
-  for(int i = 0; i < size; i++) {delete [] length_array[i];}
-  delete [] length_array;
-  delete [] pi;
-  delete [] dist;
   delete [] line;
   fclose(input_file);
 }
 
-void write_output(const char output_name[], int size, int *dist, int *pi)
+void read_file(const char input_name[], int size, int **length_array)
+{
+  FILE *input_file = fopen(input_name, "r");
+  char *line = new char[300];
+  
+  for(int i = 0; i < size; i++)
+  {
+    fscanf(input_file, "%[^\n]%*c", line);
+    get_num(line, length_array[i]);
+  }
+
+  // free the memory and close the file
+  delete [] line;
+  fclose(input_file);
+}
+
+void write_output(const char output_name[], int size, int *pi, int *dist)
 {
   FILE *output_file = fopen(output_name, "w");
   // do not have negative cycle
@@ -135,7 +130,7 @@ void get_num(const char line[], int *length_array)
   }
 }
 
-void Bellman_Ford_Algorithm(int **length_array, int *pi, int *dist, int size)
+void Bellman_Ford_Algorithm(int size, int *pi, int *dist, int **length_array)
 {
   // initialize pi and dist array
   for(int i = 0; i < size; i++)
